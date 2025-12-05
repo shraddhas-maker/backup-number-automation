@@ -31,3 +31,11 @@
 
 
 source venv/bin/activate
+
+git add .
+git commit -m "Updated code"
+git push
+
+
+
+git pull

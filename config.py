@@ -68,8 +68,10 @@ PN_PER_PILOT_PER_VN = int(os.getenv("PN_PER_PILOT_PER_VN", 1))
 
 # DBS table names (change if your schema uses different names)
 TABLES = {
-    "purchased_numbers": os.getenv("TBL_PURCHASED", "IncomingPhoneNumber"),  # VNs purchased
-    "pri": os.getenv("TBL_PRI", "Pri"),                                   # pri table with pilot status
-    "available_pns": os.getenv("TBL_AVAILABLE_PNS", "AvailablePhoneNumber"), # PNs pool
-    "outgoing_calls": os.getenv("TBL_OUTGOING", "OutgoingCallerIds")      # outgoing caller IDs,
+    "purchased_numbers": os.getenv("TBL_PURCHASED", "IncomingPhoneNumber"),     # VNs purchased
+    "pri": os.getenv("TBL_PRI", "Pri"),                                        # PRI table with pilot + state
+    "available_pns": os.getenv("TBL_AVAILABLE_PNS", "AvailablePhoneNumber"),   # PNs pool
+    "outgoing_calls": os.getenv("TBL_OUTGOING", "OutgoingCallerIds"),          # Outgoing caller IDs
+    "pvm": os.getenv("TBL_PVM", "PhysicalVirtualMap")                          # Physical-Virtual mapping
 }
+
