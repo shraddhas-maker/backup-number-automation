@@ -32,10 +32,18 @@
 
 source venv/bin/activate
 
+# 1. Check which files are changed
+git status
+
+# 2. Add ALL updated files
 git add .
-git commit -m "Updated code"
+
+# 3. Commit your changes
+git commit -m "Updated Truecaller scraper and dashboard code"
+
+# 4. Push to GitHub
 git push
 
 
-
+# 5. Pull data 
 git pull

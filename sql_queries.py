@@ -1,5 +1,3 @@
-# sql_queries.py
-
 from config import TABLES
 
 ######################################################################
@@ -10,7 +8,7 @@ SELECT
     a.sid,
     a.PhoneNumber AS vn_number,
     b.Region
-FROM {TABLES['incoming']} a
+FROM {TABLES['purchased_numbers']} a
 JOIN {TABLES['available_pns']} b
     ON a.PhoneNumber = b.PhoneNumber
 WHERE 
@@ -82,4 +80,5 @@ WHERE
         WHERE pilot = %s           -- pilot
         AND state = 'active'
     )
-LIMIT %s; """
+LIMIT %s; 
+"""

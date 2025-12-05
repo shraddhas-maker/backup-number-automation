@@ -9,25 +9,47 @@ if SHEETS_USE_GSHEETS:
     import gspread
     from oauth2client.service_account import ServiceAccountCredentials
 
+
 def read_csv_or_sheet(key):
     """
     key: one of 'accounts', 'tenant_exceptions', 'region_preferences'
+    Reads from Google Sheets (gspread) OR CSV files.
     """
+
     if SHEETS_USE_GSHEETS:
-        creds = GSHEETS["credentials_json"]
-        scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
-        gc = gspread.service_account(filename=creds)
-        sh = gc.open_by_key(GSHEETS["spreadsheet_id"])
-        sheet_name = GSHEETS.get(f"{key}_sheet", key)
+        creds_path = GSHEETS["credentials_json"]
+
+        # Get the config block inside GSHEETS (accounts / tenant_exceptions / region_preferences)
+        cfg = GSHEETS.get(key)
+        if not cfg:
+            raise KeyError(f"Missing Google Sheet config for key '{key}'")
+
+        spreadsheet_id = cfg.get("spreadsheet_id")
+        sheet_name = cfg.get("sheet_name")
+
+        if not spreadsheet_id:
+            raise ValueError(f"Spreadsheet ID not configured for key '{key}'")
+
+        # Authenticate with service account
+        gc = gspread.service_account(filename=creds_path)
+
+        # Open individual spreadsheet
+        sh = gc.open_by_key(spreadsheet_id)
+
+        # Open worksheet by name
         worksheet = sh.worksheet(sheet_name)
+
+        # Fetch all rows
         records = worksheet.get_all_records()
         return pd.DataFrame(records)
+
     else:
+        # Fallback: CSV mode
         path = CSV_FILES.get(key)
         if not path:
-            raise FileNotFoundError(f"No CSV path configured for {key}")
-        df = pd.read_csv(path)
-        return df
+            raise FileNotFoundError(f"No CSV path configured for '{key}'")
+        return pd.read_csv(path)
+
 
 def load_accounts():
     df = read_csv_or_sheet("accounts")
@@ -35,6 +57,7 @@ def load_accounts():
     df = df.fillna("")
     df = df[df['status'].str.strip().str.lower() == 'yes']
     return df.to_dict(orient='records')
+
 
 def load_tenant_exceptions():
     df = read_csv_or_sheet("tenant_exceptions")
@@ -46,6 +69,7 @@ def load_tenant_exceptions():
         if tenant:
             ex_map[tenant] = [p.strip() for p in pilots.split(',') if p.strip()]
     return ex_map
+
 
 def load_region_preferences():
     df = read_csv_or_sheet("region_preferences")
