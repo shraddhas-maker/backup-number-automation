@@ -1,9 +1,4 @@
 #!/usr/bin/env python3
-"""
-Backup PN Automation - Combined Single File
-Automatically adds backup phone numbers to purchased virtual numbers
-"""
-
 import os
 import sys
 import json
@@ -70,10 +65,6 @@ class Config:
             "spreadsheet_id": os.getenv("GS_REGION_PILOTS_ID", ""),
             "sheet_name": os.getenv("GS_REGION_PILOTS_SHEET", "RegionPilots"),
         },
-        "tenant_exceptions": {
-            "spreadsheet_id": os.getenv("GS_TENANT_EXCEPTIONS_ID", ""),
-            "sheet_name": os.getenv("GS_TENANT_EXCEPTIONS_SHEET", "TenantExceptions"),
-        },
     }
 
     # ---------- CSV fallback ----------
@@ -85,12 +76,12 @@ class Config:
         "mum_sp": os.getenv("CSV_MUM_SP", "data/mum_sp.csv"),
         "sig_sp": os.getenv("CSV_SIG_SP", "data/sig_sp.csv"),
         "region_pilots": os.getenv("CSV_REGION_PILOTS", "data/region_pilots.csv"),
-        "tenant_exceptions": os.getenv("CSV_TENANT_EXCEPTIONS", "data/tenant_exceptions.csv"),
+       
     }
 
     # ---------- External API ----------
     ADD_PN_API = {
-        "url": os.getenv("ADD_PN_URL", "https://example.com/addpn.json"),
+        "url": os.getenv("ADD_PN_URL", "https://default:7a02ce20c50196110c9c5707b82afda45fccf656b8e7a082@twilix.exotel.in/v1/Accounts/default/AvailablePhoneNumbers/1269335/addpn.json?pn=08033037796"),
         "timeout": 15,
         "headers": {"Content-Type": "application/json"},
     }
@@ -106,7 +97,7 @@ class Config:
     }
 
     EMAIL = {
-        "admin_to": os.getenv("ADMIN_EMAIL", "ops@example.com"),
+        "admin_to": os.getenv("ADMIN_EMAIL", "shraddha.s@exotel.com"),
         "subject_prefix": "[BackupPNs]",
     }
 
@@ -516,7 +507,7 @@ class BackupPNProcessor:
         
         # Step 2: Process each purchased VN
         for vn in purchased_vns:
-            vn_number = vn["vn_number"]
+            vn_number = vn["PhoneNumber"]
             region = vn.get("Region")
             
             vn_result = {
